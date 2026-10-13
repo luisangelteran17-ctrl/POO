@@ -48,6 +48,7 @@ private:
     double notaSegundoSemiciclo;
     double asistencia;
 
+public:
     void leer_codigo()
     {
         cout << "Ingrese el codigo del estudiante: ";
@@ -82,7 +83,6 @@ private:
         cin >> asistencia;
     }
 
-public:
     Estudiante()
     {
         codigo = 0;
@@ -139,6 +139,7 @@ private:
     int numeroEstudiantes;
     vector<Estudiante> estudiantes;
 
+public:
     void leer_asignatura()
     {
         cout << "Ingrese el nombre de la asignatura: ";
@@ -175,7 +176,6 @@ private:
         }
     }
 
-public:
     Curso()
     {
         pao = 0;
