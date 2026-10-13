@@ -1,101 +1,91 @@
 #include <iostream>
-#include <string>
+#include <vector>
 using namespace std;
 
-// Comprueba si una linea esta vacia o solo tiene espacios.
-bool solo_espacios(string texto)
+// Lee una palabra, sin validar el nombre ni permitir espacios.
+vector<char> leer_palabra()
 {
-    for (size_t i = 0; i < texto.length(); i++)
+    vector<char> texto;
+    char caracter;
+    cin >> ws;
+
+    while (cin.get(caracter) && caracter != ' ' && caracter != '\t' &&
+           caracter != '\n' && caracter != '\r')
     {
-        if (texto[i] != ' ' && texto[i] != '\t' && texto[i] != '\r')
-        {
-            return false;
-        }
+        texto.push_back(caracter);
     }
-    return true;
+    return texto;
 }
 
-// maximo = 0 permite cualquier entero positivo que quepa en un int.
-int leer_entero(string mensaje, int maximo = 0)
+void mostrar_palabra(const vector<char>& texto)
 {
-    int valor;
-    string resto;
+    for (size_t i = 0; i < texto.size(); i++)
+    {
+        cout << texto[i];
+    }
+}
 
+// Retira el resto de una entrada numerica y detecta caracteres sobrantes.
+bool terminar_linea()
+{
+    char caracter;
+    bool valida = true;
+    while (cin.get(caracter) && caracter != '\n')
+    {
+        if (caracter != ' ' && caracter != '\t' && caracter != '\r')
+        {
+            valida = false;
+        }
+    }
+    return valida;
+}
+
+int leer_cantidad()
+{
+    int cantidad;
     while (true)
     {
-        cout << mensaje;
-        cin >> valor;
-
+        cout << "Ingrese la cantidad de estudiantes (1-40): ";
+        cin >> cantidad;
         if (cin.fail())
         {
             if (cin.eof()) return 0;
             cin.clear();
-            getline(cin, resto);
+            terminar_linea();
         }
         else
         {
-            getline(cin, resto);
-            if (solo_espacios(resto) && valor > 0 &&
-                (maximo == 0 || valor <= maximo))
+            bool lineaValida = terminar_linea();
+            if (lineaValida && cantidad >= 1 && cantidad <= 40)
             {
-                return valor;
+                return cantidad;
             }
         }
-
-        cout << "Ingrese un entero positivo";
-        if (maximo > 0)
-        {
-            cout << " entre 1 y " << maximo;
-        }
-        cout << ".\n";
+        cout << "Cantidad invalida. Debe estar entre 1 y 40.\n";
     }
 }
 
-double leer_decimal(string mensaje, double maximo)
+double leer_nota()
 {
-    double valor;
-    string resto;
-
+    double nota;
     while (true)
     {
-        cout << mensaje;
-        cin >> valor;
-
+        cin >> nota;
         if (cin.fail())
         {
             if (cin.eof()) return -1;
             cin.clear();
-            getline(cin, resto);
+            terminar_linea();
         }
         else
         {
-            getline(cin, resto);
-            if (solo_espacios(resto) && valor >= 0 && valor <= maximo)
+            bool lineaValida = terminar_linea();
+            if (lineaValida && nota >= 0 && nota <= 10)
             {
-                return valor;
+                return nota;
             }
         }
-
-        cout << "Ingrese un numero entre 0 y " << maximo << ".\n";
-    }
-}
-
-string leer_texto(string mensaje)
-{
-    string texto;
-
-    while (true)
-    {
-        cout << mensaje;
-        if (!getline(cin, texto))
-        {
-            return "";
-        }
-        if (!solo_espacios(texto))
-        {
-            return texto;
-        }
-        cout << "El texto no puede estar vacio.\n";
+        cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
     }
 }
 
@@ -103,8 +93,8 @@ class Estudiante
 {
 private:
     int codigo;
-    string nombre;
-    string apellido;
+    vector<char> nombre;
+    vector<char> apellido;
     double notaPrimerSemiciclo;
     double notaSegundoSemiciclo;
     double asistencia;
@@ -120,24 +110,23 @@ public:
 
     bool leer_datos()
     {
-        codigo = leer_entero("Ingrese el codigo del estudiante: ");
-        if (codigo == 0) return false;
+        cout << "Ingrese el codigo del estudiante: ";
+        cin >> codigo;
+        cout << "Ingrese el nombre: ";
+        nombre = leer_palabra();
+        cout << "Ingrese el apellido: ";
+        apellido = leer_palabra();
 
-        nombre = leer_texto("Ingrese el nombre: ");
-        if (nombre == "") return false;
-
-        apellido = leer_texto("Ingrese el apellido: ");
-        if (apellido == "") return false;
-
-        notaPrimerSemiciclo = leer_decimal("Ingrese la nota del primer semiciclo: ", 10);
+        cout << "Ingrese la nota del primer semiciclo: ";
+        notaPrimerSemiciclo = leer_nota();
         if (notaPrimerSemiciclo < 0) return false;
 
-        notaSegundoSemiciclo = leer_decimal("Ingrese la nota del segundo semiciclo: ", 10);
+        cout << "Ingrese la nota del segundo semiciclo: ";
+        notaSegundoSemiciclo = leer_nota();
         if (notaSegundoSemiciclo < 0) return false;
 
-        asistencia = leer_decimal("Ingrese el porcentaje de asistencia: ", 100);
-        if (asistencia < 0) return false;
-
+        cout << "Ingrese el porcentaje de asistencia: ";
+        cin >> asistencia;
         return true;
     }
 
@@ -146,13 +135,25 @@ public:
         return (notaPrimerSemiciclo + notaSegundoSemiciclo) / 2;
     }
 
-    string clasificar()
+    void clasificar()
     {
         double promedio = calcular_promedio();
-        if (asistencia < 75) return "REPROBADO";
-        if (promedio >= 7) return "APROBADO";
-        if (promedio >= 4) return "RECUPERACION";
-        return "REPROBADO";
+        if (asistencia < 75)
+        {
+            cout << "REPROBADO";
+        }
+        else if (promedio >= 7)
+        {
+            cout << "APROBADO";
+        }
+        else if (promedio >= 4)
+        {
+            cout << "RECUPERACION";
+        }
+        else
+        {
+            cout << "REPROBADO";
+        }
     }
 
     void mostrar_datos_estudiante(int numero)
@@ -160,22 +161,28 @@ public:
         cout << "\nDATOS DEL ESTUDIANTE " << numero << '\n';
         cout << "---------------------------------\n";
         cout << "Codigo:         " << codigo << '\n';
-        cout << "Estudiante:     " << nombre << " " << apellido << '\n';
+        cout << "Estudiante:     ";
+        mostrar_palabra(nombre);
+        cout << " ";
+        mostrar_palabra(apellido);
+        cout << '\n';
         cout << "Nota 1:         " << notaPrimerSemiciclo << '\n';
         cout << "Nota 2:         " << notaSegundoSemiciclo << '\n';
         cout << "Nota acumulada: " << calcular_promedio() << '\n';
         cout << "Asistencia:     " << asistencia << "%\n";
-        cout << "Estado:         " << clasificar() << '\n';
+        cout << "Estado:         ";
+        clasificar();
+        cout << '\n';
     }
 };
 
 class Curso
 {
 private:
-    string asignatura;
+    vector<char> asignatura;
     int pao;
     int paralelo;
-    Estudiante estudiante[40];
+    vector<Estudiante> estudiante;
     int numeroEstudiantes;
 
 public:
@@ -189,17 +196,16 @@ public:
     bool ingresar_datos()
     {
         numeroEstudiantes = 0;
-        asignatura = leer_texto("Ingrese el nombre de la asignatura: ");
-        if (asignatura == "") return false;
+        cout << "Ingrese el nombre de la asignatura: ";
+        asignatura = leer_palabra();
+        cout << "Ingrese el PAO: ";
+        cin >> pao;
+        cout << "Ingrese el paralelo: ";
+        cin >> paralelo;
 
-        pao = leer_entero("Ingrese el PAO: ");
-        if (pao == 0) return false;
-
-        paralelo = leer_entero("Ingrese el paralelo: ");
-        if (paralelo == 0) return false;
-
-        int cantidad = leer_entero("Ingrese la cantidad de estudiantes (1-40): ", 40);
+        int cantidad = leer_cantidad();
         if (cantidad == 0) return false;
+        estudiante.resize(cantidad);
 
         for (int i = 0; i < cantidad; i++)
         {
@@ -213,12 +219,7 @@ public:
 
     void mostrar_notas_extremas()
     {
-        if (numeroEstudiantes == 0)
-        {
-            cout << "\nNo hay estudiantes registrados.\n";
-            return;
-        }
-
+        if (numeroEstudiantes == 0) return;
         double maxima = estudiante[0].calcular_promedio();
         double minima = maxima;
 
@@ -239,7 +240,9 @@ public:
     {
         cout << "\nDATOS DEL CURSO\n";
         cout << "----------------------------------\n";
-        cout << "Asignatura:            " << asignatura << '\n';
+        cout << "Asignatura:            ";
+        mostrar_palabra(asignatura);
+        cout << '\n';
         cout << "PAO:                   " << pao << '\n';
         cout << "Paralelo:              " << paralelo << '\n';
         cout << "Numero de estudiantes: " << numeroEstudiantes << '\n';
@@ -257,7 +260,7 @@ int main()
     Curso curso;
     if (!curso.ingresar_datos())
     {
-        cout << "\nEntrada interrumpida. No se completaron los datos del curso.\n";
+        cout << "\nEntrada interrumpida.\n";
         return 1;
     }
     curso.mostrar_datos();
