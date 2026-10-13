@@ -6,7 +6,6 @@
 #include <limits>
 #include <iomanip>
 
-
 template <typename T>
 T leer_valor_en_rango(const std::string& mensaje,
                       T minimo,
@@ -36,7 +35,6 @@ T leer_valor_en_rango(const std::string& mensaje,
     }
 }
 
-// Funcion reutilizable para leer textos con espacios
 std::string leer_texto(const std::string& mensaje)
 {
     std::string texto;
