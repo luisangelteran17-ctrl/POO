@@ -6,7 +6,7 @@
 #include <limits>
 #include <iomanip>
 
-// Funcion reutilizable para leer numeros dentro de un rango
+
 template <typename T>
 T leer_valor_en_rango(const std::string& mensaje,
                       T minimo,
