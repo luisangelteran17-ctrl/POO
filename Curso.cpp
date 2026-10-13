@@ -27,15 +27,14 @@ public:
     double leer_nota()
     {
         double nota;
-        cin >> nota;
-
-        while (cin.fail() || nota < 0 || nota > 10)
+        do
         {
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
             cin >> nota;
-        }
+            if (nota < 0 || nota > 10)
+            {
+                cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
+            }
+        } while (nota < 0 || nota > 10);
         return nota;
     }
 
@@ -152,16 +151,15 @@ public:
 
     void leer_cantidad_estudiantes()
     {
-        cout << "Ingrese la cantidad de estudiantes (1-40): ";
-        cin >> numeroEstudiantes;
-
-        while (cin.fail() || numeroEstudiantes < 1 || numeroEstudiantes > 40)
+        do
         {
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cout << "Cantidad invalida. Debe estar entre 1 y 40: ";
+            cout << "Ingrese la cantidad de estudiantes (1-40): ";
             cin >> numeroEstudiantes;
-        }
+            if (numeroEstudiantes < 1 || numeroEstudiantes > 40)
+            {
+                cout << "Cantidad invalida. Debe estar entre 1 y 40.\n";
+            }
+        } while (numeroEstudiantes < 1 || numeroEstudiantes > 40);
     }
 
     void leer_estudiantes()
