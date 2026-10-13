@@ -3,41 +3,6 @@
 #include <vector>
 using namespace std;
 
-// Lee un entero dentro del rango indicado.
-int leer_entero(string mensaje, int minimo, int maximo)
-{
-    int valor;
-    cout << mensaje;
-    cin >> valor;
-
-    while (cin.fail() || valor < minimo || valor > maximo)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Valor invalido. Ingrese un numero entre "
-             << minimo << " y " << maximo << ": ";
-        cin >> valor;
-    }
-    return valor;
-}
-
-// Lee una nota entre 0 y 10.
-double leer_nota(string mensaje)
-{
-    double nota;
-    cout << mensaje;
-    cin >> nota;
-
-    while (cin.fail() || nota < 0 || nota > 10)
-    {
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
-        cin >> nota;
-    }
-    return nota;
-}
-
 class Estudiante
 {
 private:
@@ -49,6 +14,31 @@ private:
     double asistencia;
 
 public:
+    Estudiante()
+    {
+        codigo = 0;
+        nombre = "";
+        apellido = "";
+        notaPrimerSemiciclo = 0;
+        notaSegundoSemiciclo = 0;
+        asistencia = 0;
+    }
+
+    double leer_nota()
+    {
+        double nota;
+        cin >> nota;
+
+        while (cin.fail() || nota < 0 || nota > 10)
+        {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
+            cin >> nota;
+        }
+        return nota;
+    }
+
     void leer_codigo()
     {
         cout << "Ingrese el codigo del estudiante: ";
@@ -69,26 +59,20 @@ public:
 
     void leer_nota_primer_semiciclo()
     {
-        notaPrimerSemiciclo = leer_nota("Ingrese la nota del primer semiciclo: ");
+        cout << "Ingrese la nota del primer semiciclo: ";
+        notaPrimerSemiciclo = leer_nota();
     }
 
     void leer_nota_segundo_semiciclo()
     {
-        notaSegundoSemiciclo = leer_nota("Ingrese la nota del segundo semiciclo: ");
+        cout << "Ingrese la nota del segundo semiciclo: ";
+        notaSegundoSemiciclo = leer_nota();
     }
 
     void leer_asistencia()
     {
         cout << "Ingrese el porcentaje de asistencia: ";
         cin >> asistencia;
-    }
-
-    Estudiante()
-    {
-        codigo = 0;
-        notaPrimerSemiciclo = 0;
-        notaSegundoSemiciclo = 0;
-        asistencia = 0;
     }
 
     void leer_datos()
@@ -140,6 +124,14 @@ private:
     vector<Estudiante> estudiantes;
 
 public:
+    Curso()
+    {
+        asignatura = "";
+        pao = 0;
+        paralelo = 0;
+        numeroEstudiantes = 0;
+    }
+
     void leer_asignatura()
     {
         cout << "Ingrese el nombre de la asignatura: ";
@@ -160,8 +152,16 @@ public:
 
     void leer_cantidad_estudiantes()
     {
-        numeroEstudiantes = leer_entero(
-            "Ingrese la cantidad de estudiantes (1-40): ", 1, 40);
+        cout << "Ingrese la cantidad de estudiantes (1-40): ";
+        cin >> numeroEstudiantes;
+
+        while (cin.fail() || numeroEstudiantes < 1 || numeroEstudiantes > 40)
+        {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Cantidad invalida. Debe estar entre 1 y 40: ";
+            cin >> numeroEstudiantes;
+        }
     }
 
     void leer_estudiantes()
@@ -174,13 +174,6 @@ public:
             cout << "---------------------------\n";
             estudiantes[i].leer_datos();
         }
-    }
-
-    Curso()
-    {
-        pao = 0;
-        paralelo = 0;
-        numeroEstudiantes = 0;
     }
 
     void ingresar_datos()
