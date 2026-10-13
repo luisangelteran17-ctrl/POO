@@ -19,9 +19,9 @@ public:
         codigo = 0;
         nombre = "";
         apellido = "";
-        notaPrimerSemiciclo = 0;
-        notaSegundoSemiciclo = 0;
-        asistencia = 0;
+        notaPrimerSemiciclo = 0.0;
+        notaSegundoSemiciclo = 0.0;
+        asistencia = 0.0;
     }
 
     double leer_nota()
@@ -32,7 +32,7 @@ public:
             cin >> nota;
             if (nota < 0 || nota > 10)
             {
-                cout << "Nota invalida. Ingrese una nota entre 0 y 10: ";
+                cout << "Nota invalida, Ingrese una nota entre 0 y 10: ";
             }
         } while (nota < 0 || nota > 10);
         return nota;
@@ -101,15 +101,15 @@ public:
 
     void mostrar_datos_estudiante(int numero)
     {
-        cout << "\nDATOS DEL ESTUDIANTE " << numero << '\n';
-        cout << "---------------------------------\n";
-        cout << "Codigo:         " << codigo << '\n';
-        cout << "Estudiante:     " << nombre << " " << apellido << '\n';
-        cout << "Nota 1:         " << notaPrimerSemiciclo << '\n';
-        cout << "Nota 2:         " << notaSegundoSemiciclo << '\n';
-        cout << "Nota acumulada: " << calcular_promedio() << '\n';
-        cout << "Asistencia:     " << asistencia << "%\n";
-        cout << "Estado:         " << clasificar() << '\n';
+        cout << "\nDATOS DEL ESTUDIANTE " << numero << endl;
+        cout << "---------------------------------" << endl;
+        cout << "Codigo:        " << codigo << endl;
+        cout << "Estudiante:    " << nombre << " " << apellido << endl;
+        cout << "Nota 1:        " << notaPrimerSemiciclo << endl;
+        cout << "Nota 2:        " << notaSegundoSemiciclo << endl;
+        cout << "Promedio:      " << calcular_promedio() << endl;
+        cout << "Asistencia:    " << asistencia << "%" << endl;
+        cout << "Estado:        " << clasificar() << endl;
     }
 };
 
@@ -157,7 +157,7 @@ public:
             cin >> numeroEstudiantes;
             if (numeroEstudiantes < 1 || numeroEstudiantes > 40)
             {
-                cout << "Cantidad invalida. Debe estar entre 1 y 40.\n";
+                cout << "Cantidad invalida, Debe estar entre 1 y 40" << endl;
             }
         } while (numeroEstudiantes < 1 || numeroEstudiantes > 40);
     }
@@ -168,8 +168,7 @@ public:
 
         for (int i = 0; i < numeroEstudiantes; i++)
         {
-            cout << "\nESTUDIANTE " << i + 1 << '\n';
-            cout << "---------------------------\n";
+            cout << "\nESTUDIANTE " << i + 1 << endl;;
             estudiantes[i].leer_datos();
         }
     }
@@ -207,21 +206,19 @@ public:
 
     void mostrar_datos()
     {
-        cout << "\nDATOS DEL CURSO\n";
-        cout << "----------------------------------\n";
-        cout << "Asignatura:            " << asignatura << '\n';
-        cout << "PAO:                   " << pao << '\n';
-        cout << "Paralelo:              " << paralelo << '\n';
-        cout << "Numero de estudiantes: " << numeroEstudiantes << '\n';
+        cout << "\nDATOS DEL CURSO" << endl;;
+        cout << "----------------------------------" << endl;
+        cout << "Asignatura:              " << asignatura << endl;
+        cout << "PAO:                     " << pao << endl;
+        cout << "Paralelo:                " << paralelo << endl;
+        cout << "Numero de estudiantes:   " << numeroEstudiantes << endl;
+        cout << "Promedio mas alto:       " << calcular_nota_maxima() << endl;
+        cout << "Promedio mas bajo:       " << calcular_nota_minima() << endl;
 
         for (int i = 0; i < numeroEstudiantes; i++)
         {
             estudiantes[i].mostrar_datos_estudiante(i + 1);
         }
-
-        cout << "\nRESUMEN DE NOTAS DEL CURSO\n";
-        cout << "Promedio maximo: " << calcular_nota_maxima() << '\n';
-        cout << "Promedio minimo: " << calcular_nota_minima() << '\n';
     }
 };
 
