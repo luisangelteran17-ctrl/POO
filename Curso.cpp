@@ -84,6 +84,11 @@ public:
         leer_asistencia();
     }
 
+    double calcular_nota_acumulada()
+    {
+        return notaPrimerSemiciclo + notaSegundoSemiciclo;
+    }
+
     double calcular_promedio()
     {
         return (notaPrimerSemiciclo + notaSegundoSemiciclo) / 2;
@@ -95,7 +100,7 @@ public:
 
         if (asistencia < 75) return "REPROBADO";
         if (promedio >= 7) return "APROBADO";
-        if (promedio >= 4) return "RECUPERACION";
+        if (promedio >= 4) return "SUSPENSO";
         return "REPROBADO";
     }
 
@@ -107,6 +112,7 @@ public:
         cout << "Estudiante:    " << nombre << " " << apellido << endl;
         cout << "Nota 1:        " << notaPrimerSemiciclo << endl;
         cout << "Nota 2:        " << notaSegundoSemiciclo << endl;
+        cout << "Nota acumulada: " << calcular_nota_acumulada() << endl;
         cout << "Promedio:      " << calcular_promedio() << endl;
         cout << "Asistencia:    " << asistencia << "%" << endl;
         cout << "Estado:        " << clasificar() << endl;
@@ -204,6 +210,63 @@ public:
         return minima;
     }
 
+    void mostrar_datos_curso()
+    {
+        cout << "\nDATOS DEL CURSO" << endl;
+        cout << "----------------------------------" << endl;
+        cout << "Asignatura:              " << asignatura << endl;
+        cout << "Nivel (PAO):             " << pao << endl;
+        cout << "Paralelo:                " << paralelo << endl;
+    }
+
+    void mostrar_estudiantes_menor_nota()
+    {
+        mostrar_datos_curso();
+        if (estudiantes.empty())
+        {
+            cout << "No hay estudiantes registrados." << endl;
+            return;
+        }
+
+        double menor = estudiantes[0].calcular_nota_acumulada();
+        for (int i = 1; i < numeroEstudiantes; i++)
+        {
+            double nota = estudiantes[i].calcular_nota_acumulada();
+            if (nota < menor) menor = nota;
+        }
+
+        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_nota_acumulada() == menor)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+    }
+
+    void mostrar_estudiantes_mayor_nota()
+    {
+        mostrar_datos_curso();
+        if (estudiantes.empty())
+        {
+            cout << "No hay estudiantes registrados." << endl;
+            return;
+        }
+
+        double mayor = estudiantes[0].calcular_nota_acumulada();
+        for (int i = 1; i < numeroEstudiantes; i++)
+        {
+            double nota = estudiantes[i].calcular_nota_acumulada();
+            if (nota > mayor) mayor = nota;
+        }
+
+        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_nota_acumulada() == mayor)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+    }
+
     void mostrar_datos()
     {
         cout << "\nDATOS DEL CURSO" << endl;;
@@ -226,6 +289,7 @@ int main()
 {
     Curso curso;
     curso.ingresar_datos();
-    curso.mostrar_datos();
+    curso.mostrar_estudiantes_menor_nota();
+    curso.mostrar_estudiantes_mayor_nota();
     return 0;
 }
