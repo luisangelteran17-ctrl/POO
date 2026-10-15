@@ -210,64 +210,37 @@ public:
         return minima;
     }
 
-    void mostrar_datos_curso()
-    {
-        cout << "\nDATOS DEL CURSO" << endl;
-        cout << "----------------------------------" << endl;
-        cout << "Asignatura:              " << asignatura << endl;
-        cout << "Nivel (PAO):             " << pao << endl;
-        cout << "Paralelo:                " << paralelo << endl;
-    }
-
-    vector<int> buscar_estudiantes_por_promedio(double promedio)
-    {
-        vector<int> indices;
-        for (int i = 0; i < numeroEstudiantes; i++)
-        {
-            if (estudiantes[i].calcular_promedio() == promedio)
-                indices.push_back(i);
-        }
-        return indices;
-    }
-
-    void mostrar_estudiantes(const vector<int>& indices)
-    {
-        for (int indice : indices)
-        {
-            estudiantes[indice].mostrar_datos_estudiante(indice + 1);
-        }
-    }
-
-    void mostrar_estudiantes_menor_nota()
-    {
-        mostrar_datos_curso();
-        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
-        if (estudiantes.empty()) return;
-        mostrar_estudiantes(buscar_estudiantes_por_promedio(calcular_nota_minima()));
-    }
-
-    void mostrar_estudiantes_mayor_nota()
-    {
-        mostrar_datos_curso();
-        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
-        if (estudiantes.empty()) return;
-        mostrar_estudiantes(buscar_estudiantes_por_promedio(calcular_nota_maxima()));
-    }
-
     void mostrar_datos()
     {
+        double minima = calcular_nota_minima();
+        double maxima = calcular_nota_maxima();
+
         cout << "\nDATOS DEL CURSO" << endl;;
         cout << "----------------------------------" << endl;
         cout << "Asignatura:              " << asignatura << endl;
         cout << "PAO:                     " << pao << endl;
         cout << "Paralelo:                " << paralelo << endl;
         cout << "Numero de estudiantes:   " << numeroEstudiantes << endl;
-        cout << "Promedio mas alto:       " << calcular_nota_maxima() << endl;
-        cout << "Promedio mas bajo:       " << calcular_nota_minima() << endl;
+        cout << "Promedio mas alto:       " << maxima << endl;
+        cout << "Promedio mas bajo:       " << minima << endl;
 
         for (int i = 0; i < numeroEstudiantes; i++)
         {
             estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+
+        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_promedio() == minima)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+
+        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_promedio() == maxima)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
         }
     }
 };
@@ -277,7 +250,5 @@ int main()
     Curso curso;
     curso.ingresar_datos();
     curso.mostrar_datos();
-    curso.mostrar_estudiantes_menor_nota();
-    curso.mostrar_estudiantes_mayor_nota();
     return 0;
 }
