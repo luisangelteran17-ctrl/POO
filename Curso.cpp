@@ -210,6 +210,26 @@ public:
         return minima;
     }
 
+    void mostrar_estudiantes_menor_nota(double minima)
+    {
+        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_promedio() == minima)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+    }
+
+    void mostrar_estudiantes_mayor_nota(double maxima)
+    {
+        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].calcular_promedio() == maxima)
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+        }
+    }
+
     void mostrar_datos()
     {
         double minima = calcular_nota_minima();
@@ -229,19 +249,8 @@ public:
             estudiantes[i].mostrar_datos_estudiante(i + 1);
         }
 
-        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
-        for (int i = 0; i < numeroEstudiantes; i++)
-        {
-            if (estudiantes[i].calcular_promedio() == minima)
-                estudiantes[i].mostrar_datos_estudiante(i + 1);
-        }
-
-        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
-        for (int i = 0; i < numeroEstudiantes; i++)
-        {
-            if (estudiantes[i].calcular_promedio() == maxima)
-                estudiantes[i].mostrar_datos_estudiante(i + 1);
-        }
+        mostrar_estudiantes_menor_nota(minima);
+        mostrar_estudiantes_mayor_nota(maxima);
     }
 };
 
