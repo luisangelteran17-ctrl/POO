@@ -1,39 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <limits>
-#include <cmath>
-#include <stdexcept>
 using namespace std;
-
-// Lectura reutilizable: rechaza letras, valores fuera del rango y entradas parciales.
-template <typename T>
-T leer_numero(T minimo, T maximo)
-{
-    string linea;
-    T valor;
-    while (getline(cin, linea))
-    {
-        istringstream entrada(linea);
-        if (entrada >> valor && (entrada >> ws).eof() &&
-            isfinite(static_cast<double>(valor)) && valor >= minimo && valor <= maximo)
-            return valor;
-        cout << "Valor invalido. Ingrese un valor entre " << minimo << " y " << maximo << ": ";
-    }
-    throw runtime_error("Entrada finalizada.");
-}
-
-string leer_texto()
-{
-    string texto;
-    while (getline(cin, texto))
-    {
-        if (texto.find_first_not_of(" \t\r") != string::npos) return texto;
-        cout << "El texto no puede estar vacio. Ingrese nuevamente: ";
-    }
-    throw runtime_error("Entrada finalizada.");
-}
 
 class Estudiante
 {
@@ -58,25 +26,34 @@ public:
 
     double leer_nota()
     {
-        return leer_numero(0.0, 10.0);
+        double nota;
+        do
+        {
+            cin >> nota;
+            if (nota < 0 || nota > 10)
+            {
+                cout << "Nota invalida, Ingrese una nota entre 0 y 10: ";
+            }
+        } while (nota < 0 || nota > 10);
+        return nota;
     }
 
     void leer_codigo()
     {
         cout << "Ingrese el codigo del estudiante: ";
-        codigo = leer_numero(1, numeric_limits<int>::max());
+        cin >> codigo;
     }
 
     void leer_nombre()
     {
         cout << "Ingrese el nombre: ";
-        nombre = leer_texto();
+        cin >> nombre;
     }
 
     void leer_apellido()
     {
         cout << "Ingrese el apellido: ";
-        apellido = leer_texto();
+        cin >> apellido;
     }
 
     void leer_nota_primer_semiciclo()
@@ -94,7 +71,7 @@ public:
     void leer_asistencia()
     {
         cout << "Ingrese el porcentaje de asistencia: ";
-        asistencia = leer_numero(0.0, 100.0);
+        cin >> asistencia;
     }
 
     void leer_datos()
@@ -107,32 +84,32 @@ public:
         leer_asistencia();
     }
 
-    double get_nota_segundo_parcial() const
+    double get_nota_segundo_semiciclo() const
     {
         return notaSegundoSemiciclo;
     }
 
-    double calcular_nota_acumulada() const
+    double calcular_nota_acumulada()
     {
         return notaPrimerSemiciclo + notaSegundoSemiciclo;
     }
 
-    double calcular_promedio() const
+    double calcular_promedio()
     {
         return (notaPrimerSemiciclo + notaSegundoSemiciclo) / 2;
     }
 
-    string clasificar() const
+    string clasificar()
     {
-        double acumulada = calcular_nota_acumulada();
+        double promedio = calcular_promedio();
 
         if (asistencia < 75) return "REPROBADO";
-        if (acumulada >= 14) return "APROBADO";
-        if (acumulada >= 8) return "SUSPENSO";
+        if (promedio >= 7) return "APROBADO";
+        if (promedio >= 4) return "SUSPENSO";
         return "REPROBADO";
     }
 
-    void mostrar_datos_estudiante(int numero) const
+    void mostrar_datos_estudiante(int numero)
     {
         cout << "\nDATOS DEL ESTUDIANTE " << numero << endl;
         cout << "---------------------------------" << endl;
@@ -151,8 +128,8 @@ class Curso
 {
 private:
     string asignatura;
-    int nivel;
-    string paralelo;
+    int pao;
+    int paralelo;
     int numeroEstudiantes;
     vector<Estudiante> estudiantes;
 
@@ -160,33 +137,40 @@ public:
     Curso()
     {
         asignatura = "";
-        nivel = 0;
-        paralelo = "";
+        pao = 0;
+        paralelo = 0;
         numeroEstudiantes = 0;
     }
 
     void leer_asignatura()
     {
         cout << "Ingrese el nombre de la asignatura: ";
-        asignatura = leer_texto();
+        cin >> asignatura;
     }
 
-    void leer_nivel()
+    void leer_pao()
     {
-        cout << "Ingrese el nivel: ";
-        nivel = leer_numero(1, numeric_limits<int>::max());
+        cout << "Ingrese el PAO: ";
+        cin >> pao;
     }
 
     void leer_paralelo()
     {
         cout << "Ingrese el paralelo: ";
-        paralelo = leer_texto();
+        cin >> paralelo;
     }
 
     void leer_cantidad_estudiantes()
     {
-        cout << "Ingrese la cantidad de estudiantes (1-40): ";
-        numeroEstudiantes = leer_numero(1, 40);
+        do
+        {
+            cout << "Ingrese la cantidad de estudiantes (1-40): ";
+            cin >> numeroEstudiantes;
+            if (numeroEstudiantes < 1 || numeroEstudiantes > 40)
+            {
+                cout << "Cantidad invalida, Debe estar entre 1 y 40" << endl;
+            }
+        } while (numeroEstudiantes < 1 || numeroEstudiantes > 40);
     }
 
     void leer_estudiantes()
@@ -195,7 +179,7 @@ public:
 
         for (int i = 0; i < numeroEstudiantes; i++)
         {
-            cout << "\nESTUDIANTE " << i + 1 << endl;
+            cout << "\nESTUDIANTE " << i + 1 << endl;;
             estudiantes[i].leer_datos();
         }
     }
@@ -203,7 +187,7 @@ public:
     void ingresar_datos()
     {
         leer_asignatura();
-        leer_nivel();
+        leer_pao();
         leer_paralelo();
         leer_cantidad_estudiantes();
         leer_estudiantes();
@@ -211,7 +195,6 @@ public:
 
     double calcular_nota_maxima()
     {
-        if (estudiantes.empty()) return 0.0;
         double maxima = estudiantes[0].calcular_promedio();
         for (int i = 1; i < numeroEstudiantes; i++)
         {
@@ -223,7 +206,6 @@ public:
 
     double calcular_nota_minima()
     {
-        if (estudiantes.empty()) return 0.0;
         double minima = estudiantes[0].calcular_promedio();
         for (int i = 1; i < numeroEstudiantes; i++)
         {
@@ -235,7 +217,7 @@ public:
 
     void mostrar_estudiantes_menor_nota(double minima)
     {
-        cout << "\nESTUDIANTES CON MENOR PROMEDIO" << endl;
+        cout << "\nESTUDIANTES CON MENOR NOTA ACUMULADA" << endl;
         for (int i = 0; i < numeroEstudiantes; i++)
         {
             if (estudiantes[i].calcular_promedio() == minima)
@@ -245,7 +227,7 @@ public:
 
     void mostrar_estudiantes_mayor_nota(double maxima)
     {
-        cout << "\nESTUDIANTES CON MAYOR PROMEDIO" << endl;
+        cout << "\nESTUDIANTES CON MAYOR NOTA ACUMULADA" << endl;
         for (int i = 0; i < numeroEstudiantes; i++)
         {
             if (estudiantes[i].calcular_promedio() == maxima)
@@ -253,19 +235,20 @@ public:
         }
     }
 
-    void mostrar_estudiantes_segundo_parcial() const
+    void mostrar_estudiantes_segundo_parcial()
     {
         cout << "\nESTUDIANTES CON SEGUNDO PARCIAL >= 7" << endl;
         bool encontrados = false;
         for (int i = 0; i < numeroEstudiantes; i++)
         {
-            if (estudiantes[i].get_nota_segundo_parcial() >= 7)
+            if (estudiantes[i].get_nota_segundo_semiciclo() >= 7)
             {
                 estudiantes[i].mostrar_datos_estudiante(i + 1);
                 encontrados = true;
             }
         }
-        if (!encontrados) cout << "Ningun estudiante cumple la condicion." << endl;
+        if (!encontrados)
+            cout << "Ningun estudiante cumple la condicion." << endl;
     }
 
     void mostrar_datos()
@@ -273,10 +256,10 @@ public:
         double minima = calcular_nota_minima();
         double maxima = calcular_nota_maxima();
 
-        cout << "\nDATOS DEL CURSO" << endl;
+        cout << "\nDATOS DEL CURSO" << endl;;
         cout << "----------------------------------" << endl;
         cout << "Asignatura:              " << asignatura << endl;
-        cout << "Nivel:                   " << nivel << endl;
+        cout << "PAO:                     " << pao << endl;
         cout << "Paralelo:                " << paralelo << endl;
         cout << "Numero de estudiantes:   " << numeroEstudiantes << endl;
         cout << "Promedio mas alto:       " << maxima << endl;
@@ -294,17 +277,9 @@ public:
 
 int main()
 {
-    try
-    {
-        Curso curso;
-        curso.ingresar_datos();
-        curso.mostrar_datos();
-        curso.mostrar_estudiantes_segundo_parcial();
-    }
-    catch (const runtime_error& error)
-    {
-        cerr << error.what() << endl;
-        return 1;
-    }
+    Curso curso;
+    curso.ingresar_datos();
+    curso.mostrar_datos();
+    curso.mostrar_estudiantes_segundo_parcial();
     return 0;
 }
