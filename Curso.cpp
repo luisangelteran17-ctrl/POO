@@ -84,6 +84,11 @@ public:
         leer_asistencia();
     }
 
+    double get_nota_segundo_semiciclo() const
+    {
+        return notaSegundoSemiciclo;
+    }
+
     double calcular_nota_acumulada()
     {
         return notaPrimerSemiciclo + notaSegundoSemiciclo;
@@ -230,6 +235,22 @@ public:
         }
     }
 
+    void mostrar_estudiantes_segundo_parcial()
+    {
+        cout << "\nESTUDIANTES CON SEGUNDO PARCIAL >= 7" << endl;
+        bool encontrados = false;
+        for (int i = 0; i < numeroEstudiantes; i++)
+        {
+            if (estudiantes[i].get_nota_segundo_semiciclo() >= 7)
+            {
+                estudiantes[i].mostrar_datos_estudiante(i + 1);
+                encontrados = true;
+            }
+        }
+        if (!encontrados)
+            cout << "Ningun estudiante cumple la condicion." << endl;
+    }
+
     void mostrar_datos()
     {
         double minima = calcular_nota_minima();
@@ -259,5 +280,6 @@ int main()
     Curso curso;
     curso.ingresar_datos();
     curso.mostrar_datos();
+    curso.mostrar_estudiantes_segundo_parcial();
     return 0;
 }
