@@ -140,6 +140,15 @@ public:
         leer_nombre();
         leer_cantidad_buses();
         leer_buses();
+        leer_numero_cooperativa();
+    }
+
+    void leer_numero_cooperativa()
+    {
+        string numeroCooperativa;
+        cout << "\nIngrese el numero de la cooperativa: ";
+        cin >> numeroCooperativa;
+        actualizar_numeros(numeroCooperativa);
     }
 
     void mostrar() const
@@ -152,6 +161,25 @@ public:
             if (buses[i].getCantidadAsientos() >= 20)
                 buses[i].mostrar();
         }
+
+        consultar_buses_propietario();
+        consultar_bus_placa();
+    }
+
+    void consultar_buses_propietario() const
+    {
+        string nombrePropietario;
+        cout << "\nIngrese el nombre del propietario a buscar: ";
+        cin >> nombrePropietario;
+        mostrar_buses_propietario(nombrePropietario);
+    }
+
+    void consultar_bus_placa() const
+    {
+        string placa;
+        cout << "\nIngrese la placa del bus a buscar: ";
+        cin >> placa;
+        mostrar_bus_placa(placa);
     }
 
     void actualizar_numeros(string numeroCooperativa)
@@ -184,25 +212,7 @@ public:
 int main()
 {
     Cooperativa cooperativa;
-    string numeroCooperativa;
-    string nombrePropietario;
-    string placa;
-
     cooperativa.leer();
-
-    cout << "\nIngrese el numero de la cooperativa: ";
-    cin >> numeroCooperativa;
-    cooperativa.actualizar_numeros(numeroCooperativa);
-
     cooperativa.mostrar();
-
-    cout << "\nIngrese el nombre del propietario a buscar: ";
-    cin >> nombrePropietario;
-    cooperativa.mostrar_buses_propietario(nombrePropietario);
-
-    cout << "\nIngrese la placa del bus a buscar: ";
-    cin >> placa;
-    cooperativa.mostrar_bus_placa(placa);
-
     return 0;
 }
