@@ -145,6 +145,7 @@ public:
         leer_cantidad_buses();
         leer_buses();
         leer_numero_cooperativa();
+        actualizar_numeros();
     }
 
     void leer_numero_cooperativa()
@@ -213,7 +214,6 @@ int main()
 {
     Cooperativa cooperativa;
     cooperativa.leer();
-    cooperativa.actualizar_numeros();
     cooperativa.mostrar();
 
     // Consultas opcionales: quite // para ejecutar la consulta que necesite.
