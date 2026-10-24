@@ -34,12 +34,6 @@ public:
         cin >> apellidoPropietario;
     }
 
-    void leer_numero_bus()
-    {
-        cout << "Ingrese el numero del bus: ";
-        cin >> numeroBus;
-    }
-
     void leer_cantidad_asientos()
     {
         cout << "Ingrese la cantidad de asientos: ";
@@ -56,7 +50,6 @@ public:
     {
         leer_nombre_propietario();
         leer_apellido_propietario();
-        leer_numero_bus();
         leer_cantidad_asientos();
         leer_placa();
     }
@@ -99,6 +92,7 @@ class Cooperativa
 {
 private:
     string nombre;
+    string numeroCooperativa;
     int cantidadBuses;
     vector<Bus> buses;
 
@@ -106,6 +100,7 @@ public:
     Cooperativa()
     {
         nombre = "";
+        numeroCooperativa = "";
         cantidadBuses = 0;
     }
 
@@ -124,6 +119,14 @@ public:
         } while (cantidadBuses < 1 || cantidadBuses > 100);
     }
 
+    string generar_numero_bus(int orden) const
+    {
+        string numero = to_string(orden);
+        while (numero.length() < 3)
+            numero = "0" + numero;
+        return numero;
+    }
+
     void leer_buses()
     {
         buses.resize(cantidadBuses);
@@ -132,6 +135,7 @@ public:
         {
             cout << "\nBUS " << i + 1 << endl;
             buses[i].leer();
+            buses[i].set_numero_bus(generar_numero_bus(i + 1));
         }
     }
 
@@ -145,10 +149,8 @@ public:
 
     void leer_numero_cooperativa()
     {
-        string numeroCooperativa;
         cout << "\nIngrese el numero de la cooperativa: ";
         cin >> numeroCooperativa;
-        actualizar_numeros(numeroCooperativa);
     }
 
     void mostrar() const
@@ -162,8 +164,6 @@ public:
                 buses[i].mostrar();
         }
 
-        consultar_buses_propietario();
-        consultar_bus_placa();
     }
 
     void consultar_buses_propietario() const
@@ -182,11 +182,11 @@ public:
         mostrar_bus_placa(placa);
     }
 
-    void actualizar_numeros(string numeroCooperativa)
+    void actualizar_numeros()
     {
         for (int i = 0; i < cantidadBuses; i++)
         {
-            buses[i].set_numero_bus(numeroCooperativa + buses[i].get_numero_bus());
+            buses[i].set_numero_bus(numeroCooperativa + generar_numero_bus(i + 1));
         }
     }
 
@@ -213,6 +213,12 @@ int main()
 {
     Cooperativa cooperativa;
     cooperativa.leer();
+    cooperativa.actualizar_numeros();
     cooperativa.mostrar();
+
+    // Consultas opcionales: quite // para ejecutar la consulta que necesite.
+    // cooperativa.consultar_buses_propietario();
+    // cooperativa.consultar_bus_placa();
+
     return 0;
 }
