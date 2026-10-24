@@ -1,71 +1,7 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <sstream>
-#include <stdexcept>
-#include <climits>
-#include <cctype>
+#include <string>
 using namespace std;
-
-// Validaciones compartidas: cada lectura consume una linea completa.
-string leer_texto(const string& mensaje)
-{
-    string texto;
-    char caracter;
-    do
-    {
-        cout << mensaje;
-        texto = "";
-        while (cin.get(caracter) && caracter != '\n')
-            texto += caracter;
-        if (!cin && texto.empty())
-            throw runtime_error("Entrada finalizada.");
-
-        int inicio = 0;
-        int fin = static_cast<int>(texto.length());
-        while (inicio < fin && isspace(static_cast<unsigned char>(texto[inicio])))
-            inicio++;
-        while (fin > inicio && isspace(static_cast<unsigned char>(texto[fin - 1])))
-            fin--;
-        texto = texto.substr(inicio, fin - inicio);
-        if (texto.empty())
-            cout << "El texto no puede estar vacio." << endl;
-    } while (texto.empty());
-    return texto;
-}
-
-int leer_entero(const string& mensaje, int minimo, int maximo)
-{
-    while (true)
-    {
-        string texto = leer_texto(mensaje);
-        istringstream entrada(texto);
-        int valor = 0;
-        char sobrante;
-        if ((entrada >> valor) && !(entrada >> sobrante)
-            && valor >= minimo && valor <= maximo)
-            return valor;
-        cout << "Ingrese un entero entre " << minimo << " y " << maximo << "." << endl;
-    }
-}
-
-string leer_numero(const string& mensaje)
-{
-    while (true)
-    {
-        string numero = leer_texto(mensaje);
-        if (numero.find_first_not_of("0123456789") == string::npos)
-            return numero;
-        cout << "Ingrese solamente digitos." << endl;
-    }
-}
-
-string convertir_mayusculas(string texto)
-{
-    for (char& caracter : texto)
-        caracter = static_cast<char>(toupper(static_cast<unsigned char>(caracter)));
-    return texto;
-}
 
 class Bus
 {
@@ -75,7 +11,6 @@ private:
     string numeroBus;
     int cantidadAsientos;
     string placa;
-    string numeroOriginal;
 
 public:
     Bus()
@@ -85,33 +20,36 @@ public:
         numeroBus = "";
         cantidadAsientos = 0;
         placa = "";
-        numeroOriginal = "";
     }
 
     void leer_nombre_propietario()
     {
-        nombrePropietario = leer_texto("Ingrese el nombre del propietario: ");
+        cout << "Ingrese el nombre del propietario: ";
+        cin >> nombrePropietario;
     }
 
     void leer_apellido_propietario()
     {
-        apellidoPropietario = leer_texto("Ingrese el apellido del propietario: ");
+        cout << "Ingrese el apellido del propietario: ";
+        cin >> apellidoPropietario;
     }
 
     void leer_numero_bus()
     {
-        numeroOriginal = leer_numero("Ingrese el numero original del bus: ");
-        numeroBus = numeroOriginal;
+        cout << "Ingrese el numero del bus: ";
+        cin >> numeroBus;
     }
 
     void leer_cantidad_asientos()
     {
-        cantidadAsientos = leer_entero("Ingrese la cantidad de asientos: ", 1, INT_MAX);
+        cout << "Ingrese la cantidad de asientos: ";
+        cin >> cantidadAsientos;
     }
 
     void leer_placa()
     {
-        placa = convertir_mayusculas(leer_texto("Ingrese la placa: "));
+        cout << "Ingrese la placa: ";
+        cin >> placa;
     }
 
     void leer()
@@ -123,14 +61,19 @@ public:
         leer_placa();
     }
 
-    int getCantidadAsientos() const
-    {
-        return cantidadAsientos;
-    }
-
     string get_nombre_propietario() const
     {
         return nombrePropietario;
+    }
+
+    string get_numero_bus() const
+    {
+        return numeroBus;
+    }
+
+    int getCantidadAsientos() const
+    {
+        return cantidadAsientos;
     }
 
     string get_placa() const
@@ -138,15 +81,9 @@ public:
         return placa;
     }
 
-    string get_numero_original() const
+    void set_numero_bus(string numero)
     {
-        return numeroOriginal;
-    }
-
-    void actualizar_numero(const string& numeroCooperativa)
-    {
-        // Ejemplo del enunciado: cooperativa 40 + bus 10 = 4010.
-        numeroBus = numeroCooperativa + numeroOriginal;
+        numeroBus = numero;
     }
 
     void mostrar() const
@@ -162,54 +99,46 @@ class Cooperativa
 {
 private:
     string nombre;
+    int cantidadBuses;
     vector<Bus> buses;
-
-    bool bus_repetido(const Bus& candidato) const
-    {
-        for (const Bus& bus : buses)
-        {
-            if (bus.get_placa() == candidato.get_placa()
-                || bus.get_numero_original() == candidato.get_numero_original())
-                return true;
-        }
-        return false;
-    }
 
 public:
     Cooperativa()
     {
         nombre = "";
+        cantidadBuses = 0;
     }
 
     void leer_nombre()
     {
-        nombre = leer_texto("Ingrese el nombre de la cooperativa: ");
+        cout << "Ingrese el nombre de la cooperativa: ";
+        cin >> nombre;
+    }
+
+    void leer_cantidad_buses()
+    {
+        do
+        {
+            cout << "Ingrese la cantidad de buses (1-100): ";
+            cin >> cantidadBuses;
+        } while (cantidadBuses < 1 || cantidadBuses > 100);
     }
 
     void leer_buses()
     {
-        int cantidad = leer_entero("Ingrese la cantidad de buses (1-100): ", 1, 100);
-        buses.clear();
-        buses.reserve(cantidad);
-        for (int i = 0; i < cantidad; i++)
+        buses.resize(cantidadBuses);
+
+        for (int i = 0; i < cantidadBuses; i++)
         {
-            Bus bus;
-            bool repetido;
-            do
-            {
-                cout << "\nBUS " << i + 1 << endl;
-                bus.leer();
-                repetido = bus_repetido(bus);
-                if (repetido)
-                    cout << "La placa o el numero ya estan registrados. Ingrese nuevamente el bus." << endl;
-            } while (repetido);
-            buses.push_back(bus);
+            cout << "\nBUS " << i + 1 << endl;
+            buses[i].leer();
         }
     }
 
     void leer()
     {
         leer_nombre();
+        leer_cantidad_buses();
         leer_buses();
     }
 
@@ -217,101 +146,63 @@ public:
     {
         cout << "\nCOOPERATIVA: " << nombre << endl;
         cout << "BUSES CON 20 ASIENTOS O MAS" << endl;
-        bool encontrados = false;
-        for (const Bus& bus : buses)
+
+        for (int i = 0; i < cantidadBuses; i++)
         {
-            if (bus.getCantidadAsientos() >= 20)
-            {
-                bus.mostrar();
-                encontrados = true;
-            }
+            if (buses[i].getCantidadAsientos() >= 20)
+                buses[i].mostrar();
         }
-        if (!encontrados)
-            cout << "Ningun bus cumple la condicion." << endl;
     }
 
-    void actualizar_numeros(const string& numeroCooperativa)
+    void actualizar_numeros(string numeroCooperativa)
     {
-        if (numeroCooperativa.empty()
-            || numeroCooperativa.find_first_not_of("0123456789") != string::npos)
+        for (int i = 0; i < cantidadBuses; i++)
         {
-            cout << "El numero de cooperativa debe contener solamente digitos." << endl;
-            return;
+            buses[i].set_numero_bus(numeroCooperativa + buses[i].get_numero_bus());
         }
-        for (Bus& bus : buses)
-            bus.actualizar_numero(numeroCooperativa);
-        cout << "Numeros actualizados." << endl;
     }
 
-    void mostrar_buses_propietario(const string& nombreBuscado) const
+    void mostrar_buses_propietario(string nombreBuscado) const
     {
-        bool encontrados = false;
-        string nombreComparado = convertir_mayusculas(nombreBuscado);
-        for (const Bus& bus : buses)
+        for (int i = 0; i < cantidadBuses; i++)
         {
-            if (convertir_mayusculas(bus.get_nombre_propietario()) == nombreComparado)
-            {
-                bus.mostrar();
-                encontrados = true;
-            }
+            if (buses[i].get_nombre_propietario() == nombreBuscado)
+                buses[i].mostrar();
         }
-        if (!encontrados)
-            cout << "No se encontraron buses de ese propietario." << endl;
     }
 
-    void mostrar_bus_placa(const string& placaBuscada) const
+    void mostrar_bus_placa(string placaBuscada) const
     {
-        string placaComparada = convertir_mayusculas(placaBuscada);
-        for (const Bus& bus : buses)
+        for (int i = 0; i < cantidadBuses; i++)
         {
-            if (bus.get_placa() == placaComparada)
-            {
-                bus.mostrar();
-                return;
-            }
+            if (buses[i].get_placa() == placaBuscada)
+                buses[i].mostrar();
         }
-        cout << "No se encontro un bus con esa placa." << endl;
     }
 };
 
 int main()
 {
-    try
-    {
-        Cooperativa cooperativa;
-        cooperativa.leer();
-        int opcion;
-        do
-        {
-            cout << "\n1. Mostrar buses con 20 asientos o mas" << endl;
-            cout << "2. Actualizar los numeros de todos los buses" << endl;
-            cout << "3. Buscar buses por nombre del propietario" << endl;
-            cout << "4. Buscar bus por placa" << endl;
-            cout << "0. Salir" << endl;
-            opcion = leer_entero("Seleccione una opcion: ", 0, 4);
-            switch (opcion)
-            {
-                case 1:
-                    cooperativa.mostrar();
-                    break;
-                case 2:
-                    cooperativa.actualizar_numeros(leer_numero("Ingrese el numero de cooperativa: "));
-                    break;
-                case 3:
-                    cooperativa.mostrar_buses_propietario(leer_texto("Ingrese el nombre del propietario: "));
-                    break;
-                case 4:
-                    cooperativa.mostrar_bus_placa(leer_texto("Ingrese la placa: "));
-                    break;
-                case 0:
-                    cout << "Programa finalizado." << endl;
-                    break;
-            }
-        } while (opcion != 0);
-    }
-    catch (const runtime_error& error)
-    {
-        cout << "\n" << error.what() << endl;
-    }
+    Cooperativa cooperativa;
+    string numeroCooperativa;
+    string nombrePropietario;
+    string placa;
+
+    cooperativa.leer();
+
+    cout << "\nIngrese el numero de la cooperativa: ";
+    cin >> numeroCooperativa;
+    cooperativa.actualizar_numeros(numeroCooperativa);
+
+    cooperativa.mostrar();
+
+    cout << "\nIngrese el nombre del propietario a buscar: ";
+    cin >> nombrePropietario;
+    cooperativa.mostrar_buses_propietario(nombrePropietario);
+
+    cout << "\nIngrese la placa del bus a buscar: ";
+    cin >> placa;
+    cooperativa.mostrar_bus_placa(placa);
+
     return 0;
 }
